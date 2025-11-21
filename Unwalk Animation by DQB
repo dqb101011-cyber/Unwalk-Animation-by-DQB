@@ -1,0 +1,57 @@
+-- SCRIPT BY DQB
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+ToggleButton.Parent = ScreenGui
+ToggleButton.Size = UDim2.new(0, 150, 0, 50)
+ToggleButton.Position = UDim2.new(0, 20, 0, 200)
+ToggleButton.Text = "Unwalk: OFF"
+ToggleButton.BackgroundColor3 = Color3.fromRGB(50,50,50)
+ToggleButton.TextColor3 = Color3.fromRGB(255,255,255)
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.TextSize = 22
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hum = character:WaitForChild("Humanoid")
+
+local unwalkEnabled = false
+local originalAnimator = nil
+--SCRIPT BY DQB
+-- Hàm bật/tắt
+local function toggleUnwalk()
+    unwalkEnabled = not unwalkEnabled
+
+    if unwalkEnabled then
+        -- TẮT animation
+        originalAnimator = hum:FindFirstChildOfClass("Animator")
+        if originalAnimator then
+            originalAnimator.Parent = nil   -- Gỡ Animator ra khỏi Humanoid
+        end
+
+        ToggleButton.Text = "Unwalk: ON"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(20,150,20)
+
+    else
+        -- BẬT lại animation mặc định
+        if not hum:FindFirstChildOfClass("Animator") then
+            originalAnimator.Parent = hum
+        end
+
+        ToggleButton.Text = "Unwalk: OFF"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(150,20,20)
+    end
+end
+-- SCRIPT BY DQB
+ToggleButton.MouseButton1Click:Connect(toggleUnwalk)
+
+-- Chặn animation chạy lại khi di chuyển
+hum.Running:Connect(function(speed)
+    if unwalkEnabled and speed > 0 then
+        -- Chặn animation bằng cách load animation trống
+        local fake = Instance.new("Animation")
+        hum:LoadAnimation(fake):Play()
+    end
+end)
