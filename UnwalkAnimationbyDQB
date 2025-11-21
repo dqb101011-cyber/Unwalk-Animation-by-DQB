@@ -1,4 +1,4 @@
--- SCRIPT BY DQB
+-- SCRIPT BY DQB.
 local ScreenGui = Instance.new("ScreenGui")
 local ToggleButton = Instance.new("TextButton")
 
